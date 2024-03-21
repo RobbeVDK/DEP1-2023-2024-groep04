@@ -27,7 +27,7 @@ CREATE TABLE DimensionStandings (
     DateKey INT,
     StandingsPlayday INT,
     StandingsYear INT,
-    ClubKey INT,
+    StamNumber INT,
     Ranking INT,
     Points INT,
     Wins INT,
