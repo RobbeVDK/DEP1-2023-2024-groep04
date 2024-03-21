@@ -1,16 +1,19 @@
-use Groep4_DEP1;
+-- Gebruik de database
+USE Groep4_DEP1;
+
+-- Creëer de DimensionTeam tabel
 CREATE TABLE DimensionTeam (
     teamId INT PRIMARY KEY,
     TeamName VARCHAR(255),
     StamNumber INT
 );
 
-
+-- Creëer de FactTableMatch tabel met een verwijzing naar de DimDate tabel
 CREATE TABLE FactTableMatch (
     MatchId INT PRIMARY KEY,
+    DateKey INT,
     HomeTeam INT,
     AwayTeam INT,
-    MatchDay DATE,
     HomeTeamScore INT,
     AwayTeamScore INT,
     Result VARCHAR(1),
@@ -20,15 +23,17 @@ CREATE TABLE FactTableMatch (
     StartingHour TIME,
     EndingHour TIME,
     FOREIGN KEY (HomeTeam) REFERENCES DimensionTeam(teamId),
-    FOREIGN KEY (AwayTeam) REFERENCES DimensionTeam(teamId)
+    FOREIGN KEY (AwayTeam) REFERENCES DimensionTeam(teamId),
+    FOREIGN KEY (DateKey) REFERENCES DimDate(DateKey)
 );
 
+-- Creëer de FactTableBet tabel met een verwijzing naar de DimDate tabel
 CREATE TABLE FactTableBet (
     BettingId INT PRIMARY KEY,
+    DateKey INT,
     HomeTeam INT,
     AwayTeam INT,
     MatchId INT,
-    MatchDay DATE,
     OddsHome DECIMAL(5,2),
     OddsAway DECIMAL(5,2),
     OddsDraw DECIMAL(5,2),
@@ -36,10 +41,11 @@ CREATE TABLE FactTableBet (
     OddsOverGoals DECIMAL(5,2),
     FOREIGN KEY (HomeTeam) REFERENCES DimensionTeam(teamId),
     FOREIGN KEY (AwayTeam) REFERENCES DimensionTeam(teamId),
-    FOREIGN KEY (MatchId) REFERENCES FactTableMatch(MatchId)
+    FOREIGN KEY (MatchId) REFERENCES FactTableMatch(MatchId),
+    FOREIGN KEY (DateKey) REFERENCES DimDate(DateKey)
 );
 
-
+-- Creëer de DimensionStandings tabel
 CREATE TABLE DimensionStandings (
     StandingsDayId INT PRIMARY KEY,
     StandingsPlayday INT,
@@ -54,6 +60,7 @@ CREATE TABLE DimensionStandings (
     FOREIGN KEY (ClubID) REFERENCES DimensionTeam(teamId)
 );
 
+-- Creëer de DimensionGoal tabel
 CREATE TABLE DimensionGoal (
     GoalId INT PRIMARY KEY,
     MatchId INT,
@@ -66,6 +73,7 @@ CREATE TABLE DimensionGoal (
     FOREIGN KEY (TeamScored) REFERENCES DimensionTeam(teamId)
 );
 
+-- Creëer de DimDate tabel
 CREATE TABLE DimDate (
     DateKey INT PRIMARY KEY,
     FullDate DATE,
