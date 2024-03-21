@@ -7,6 +7,15 @@ CREATE TABLE DimensionTeam (
     TeamName VARCHAR(255),
     StamNumber INT
 );
+-- Creëer de DimDate tabel
+CREATE TABLE DimDate (
+    DateKey INT PRIMARY KEY,
+    FullDate DATE,
+    Year INT,
+    Quarter INT,
+    Month INT,
+    Day INT
+);
 
 -- Creëer de FactTableMatch tabel met een verwijzing naar de DimDate tabel
 CREATE TABLE FactTableMatch (
@@ -73,12 +82,3 @@ CREATE TABLE DimensionGoal (
     FOREIGN KEY (TeamScored) REFERENCES DimensionTeam(teamId)
 );
 
--- Creëer de DimDate tabel
-CREATE TABLE DimDate (
-    DateKey INT PRIMARY KEY,
-    FullDate DATE,
-    Year INT,
-    Quarter INT,
-    Month INT,
-    Day INT
-);
