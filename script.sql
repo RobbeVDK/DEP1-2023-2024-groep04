@@ -1,13 +1,12 @@
--- Gebruik de database
 USE Groep4_DEP1;
 
--- Creëer de DimensionTeam tabel
+-- Dimension tables
 CREATE TABLE DimensionTeam (
-    teamId INT PRIMARY KEY,
+    TeamKey INT PRIMARY KEY,
     TeamName VARCHAR(255),
     StamNumber INT
 );
--- Creëer de DimDate tabel
+
 CREATE TABLE DimDate (
     DateKey INT PRIMARY KEY,
     FullDate DATE,
@@ -17,68 +16,60 @@ CREATE TABLE DimDate (
     Day INT
 );
 
--- Creëer de FactTableMatch tabel met een verwijzing naar de DimDate tabel
-CREATE TABLE FactTableMatch (
-    MatchId INT PRIMARY KEY,
-    DateKey INT,
-    HomeTeam INT,
-    AwayTeam INT,
-    HomeTeamScore INT,
-    AwayTeamScore INT,
-    Result VARCHAR(1),
-    GoalsScored INT,
-    Playday INT,
-    SeasonYear INT,
-    StartingHour TIME,
-    EndingHour TIME,
-    FOREIGN KEY (HomeTeam) REFERENCES DimensionTeam(teamId),
-    FOREIGN KEY (AwayTeam) REFERENCES DimensionTeam(teamId),
-    FOREIGN KEY (DateKey) REFERENCES DimDate(DateKey)
+CREATE TABLE DimensionTime (
+    TimeKey INT PRIMARY KEY,
+    Hour INT,
+    Minute INT
 );
 
--- Creëer de FactTableBet tabel met een verwijzing naar de DimDate tabel
-CREATE TABLE FactTableBet (
-    BettingId INT PRIMARY KEY,
-    DateKey INT,
-    HomeTeam INT,
-    AwayTeam INT,
-    MatchId INT,
-    OddsHome DECIMAL(5,2),
-    OddsAway DECIMAL(5,2),
-    OddsDraw DECIMAL(5,2),
-    OddsUnderGoals DECIMAL(5,2),
-    OddsOverGoals DECIMAL(5,2),
-    FOREIGN KEY (HomeTeam) REFERENCES DimensionTeam(teamId),
-    FOREIGN KEY (AwayTeam) REFERENCES DimensionTeam(teamId),
-    FOREIGN KEY (MatchId) REFERENCES FactTableMatch(MatchId),
-    FOREIGN KEY (DateKey) REFERENCES DimDate(DateKey)
-);
-
--- Creëer de DimensionStandings tabel
 CREATE TABLE DimensionStandings (
-    StandingsDayId INT PRIMARY KEY,
+    StandingsDayKey INT PRIMARY KEY,
+    DateKey INT,
     StandingsPlayday INT,
     StandingsYear INT,
-    ClubID INT,
+    ClubKey INT,
     Ranking INT,
     Points INT,
     Wins INT,
     Ties INT,
     Losses INT,
     GoalDifference INT,
-    FOREIGN KEY (ClubID) REFERENCES DimensionTeam(teamId)
+    FOREIGN KEY (DateKey) REFERENCES DimDate(DateKey)
 );
 
--- Creëer de DimensionGoal tabel
 CREATE TABLE DimensionGoal (
-    GoalId INT PRIMARY KEY,
-    MatchId INT,
+    GoalKey INT PRIMARY KEY,
     GoalTimeRelative INT,
-    TeamScored INT,
-    HomeScore INT,
-    AwayScore INT,
-    AbsoluteTime TIME,
-    FOREIGN KEY (MatchId) REFERENCES FactTableMatch(MatchId),
-    FOREIGN KEY (TeamScored) REFERENCES DimensionTeam(teamId)
+    ScoreAtGoal INT
+    -- Geen directe FOREIGN KEY naar DimensionTeam; dit zal via FactTableMatch worden afgehandeld
 );
 
+-- Fact tables
+CREATE TABLE FactTableMatch (
+    MatchKey INT PRIMARY KEY,
+    DateKey INT,
+    TimeKey INT,
+    HomeTeamKey INT,
+    AwayTeamKey INT,
+    GoalKey INT,
+    FOREIGN KEY (DateKey) REFERENCES DimDate(DateKey),
+    FOREIGN KEY (TimeKey) REFERENCES DimensionTime(TimeKey),
+    FOREIGN KEY (HomeTeamKey) REFERENCES DimensionTeam(TeamKey),
+    FOREIGN KEY (AwayTeamKey) REFERENCES DimensionTeam(TeamKey),
+    FOREIGN KEY (GoalKey) REFERENCES DimensionGoal(GoalKey)
+);
+
+CREATE TABLE FactTableBet (
+    BettingKey INT PRIMARY KEY,
+    MatchKey INT,
+    DateKey INT,
+    TimeKey INT,
+    OddsHome DECIMAL(5,2),
+    OddsAway DECIMAL(5,2),
+    OddsDraw DECIMAL(5,2),
+    OddsUnderGoals DECIMAL(5,2),
+    OddsOverGoals DECIMAL(5,2),
+    FOREIGN KEY (MatchKey) REFERENCES FactTableMatch(MatchKey),
+    FOREIGN KEY (DateKey) REFERENCES DimDate(DateKey),
+    FOREIGN KEY (TimeKey) REFERENCES DimensionTime(TimeKey)
+);
