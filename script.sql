@@ -33,15 +33,16 @@ CREATE TABLE DimensionStandings (
     Wins INT,
     Ties INT,
     Losses INT,
-    GoalDifference INT,
-    FOREIGN KEY (DateKey) REFERENCES DimDate(DateKey)
+    GoalDifference INT
+    -- Verwijderd: FOREIGN KEY (DateKey) REFERENCES DimDate(DateKey), om aan ster schema te voldoen
 );
+
 
 CREATE TABLE DimensionGoal (
     GoalKey INT PRIMARY KEY,
     GoalTimeRelative INT,
     ScoreAtGoal INT
-    -- Geen directe FOREIGN KEY naar DimensionTeam; dit zal via FactTableMatch worden afgehandeld
+    -- Verwijderd: Elke directe FOREIGN KEY, om alleen via FactTableMatch te koppelen
 );
 
 -- Fact tables
@@ -52,11 +53,12 @@ CREATE TABLE FactTableMatch (
     HomeTeamKey INT,
     AwayTeamKey INT,
     GoalKey INT,
+    PlayerKey INT, -- Toegevoegd om de speler die gescoord heeft te identificeren
     FOREIGN KEY (DateKey) REFERENCES DimDate(DateKey),
     FOREIGN KEY (TimeKey) REFERENCES DimensionTime(TimeKey),
     FOREIGN KEY (HomeTeamKey) REFERENCES DimensionTeam(TeamKey),
     FOREIGN KEY (AwayTeamKey) REFERENCES DimensionTeam(TeamKey),
-    FOREIGN KEY (GoalKey) REFERENCES DimensionGoal(GoalKey)
+    -- Verwijderd: FOREIGN KEY (GoalKey) omdat meerdere goals per match mogelijk zijn; overweeg dit te beheren via een aparte relatie of tabel indien nodig
 );
 
 CREATE TABLE FactTableBet (
