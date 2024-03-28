@@ -10,10 +10,8 @@ CREATE TABLE DimensionTeam (
 CREATE TABLE DimDate (
     DateKey INT PRIMARY KEY,
     FullDate DATE,
-    Year INT,
-    Quarter INT,
-    Month INT,
-    Day INT
+    Season INT,
+    Playday INT,
 );
 
 CREATE TABLE DimensionTime (
@@ -39,9 +37,7 @@ CREATE TABLE DimensionStandings (
 
 CREATE TABLE DimensionGoal (
     GoalKey INT PRIMARY KEY,
-    GoalTimeRelative INT,
-    ScoreAtGoal INT
-    -- Geen directe FOREIGN KEY naar DimensionTeam; dit zal via FactTableMatch worden afgehandeld
+    GoalTimeRelative INT
 );
 
 -- Fact tables
@@ -51,11 +47,13 @@ CREATE TABLE FactTableMatch (
     TimeKey INT,
     HomeTeamKey INT,
     AwayTeamKey INT,
+	GoalTeamKey INT,
     GoalKey INT,
     FOREIGN KEY (DateKey) REFERENCES DimDate(DateKey),
     FOREIGN KEY (TimeKey) REFERENCES DimensionTime(TimeKey),
     FOREIGN KEY (HomeTeamKey) REFERENCES DimensionTeam(TeamKey),
     FOREIGN KEY (AwayTeamKey) REFERENCES DimensionTeam(TeamKey),
+	FOREIGN KEY (GoalTeamKey) REFERENCES DimensionTeam(TeamKey),
     FOREIGN KEY (GoalKey) REFERENCES DimensionGoal(GoalKey)
 );
 
