@@ -1,4 +1,4 @@
-use Groep4_DEP1;
+USE Groep4_DEP1;
 
 -- Dimension tables
 CREATE TABLE DimensionTeam (
@@ -87,6 +87,6 @@ CREATE TABLE FactTableBet (
     OddsUnderGoals DECIMAL(5,2),
     OddsOverGoals DECIMAL(5,2),
     FOREIGN KEY (MatchKey) REFERENCES FactTableMatch(MatchKey),
-    FOREIGN KEY (DateKey) REFERENCES DimDate(DateKey),
-    FOREIGN KEY (TimeKey) REFERENCES DimTime(TimeKey)
+    FOREIGN KEY (DateKeyMatch) REFERENCES DimDate(DateKey),
+    FOREIGN KEY (TimeKeyMatch) REFERENCES DimTime(TimeKey)
 );
