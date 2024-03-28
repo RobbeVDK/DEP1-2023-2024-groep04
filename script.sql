@@ -16,7 +16,7 @@ CREATE TABLE DimDate (
 	Year INT,
 	Month INT,
 	Day INT,
-	DayOfWeek INT,
+	DayOfWeek VARCHAR(255),
 	IsWeekend BIT,
 	IsHoliday BIT,
 );
