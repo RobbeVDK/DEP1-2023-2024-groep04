@@ -80,7 +80,7 @@ CREATE TABLE FactTableBet (
 	TimeKeyScrape INT,
 	HomeTeamScore INT,
 	AwayTeamScore INT,
-	under_over_x INT,
+	Under_Over_X INT,
     OddsHome DECIMAL(5,2),
     OddsAway DECIMAL(5,2),
     OddsDraw DECIMAL(5,2),
