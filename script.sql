@@ -37,7 +37,9 @@ CREATE TABLE DimensionStandings (
 
 CREATE TABLE DimensionGoal (
     GoalKey INT PRIMARY KEY,
-    GoalTimeRelative INT
+    GoalTimeRelative INT,
+    IsHomeTeamGoal BIT,
+    FOREIGN KEY (MatchKey) REFERENCES FactTableMatch(MatchKey)
 );
 
 -- Fact tables
@@ -47,14 +49,10 @@ CREATE TABLE FactTableMatch (
     TimeKey INT,
     HomeTeamKey INT,
     AwayTeamKey INT,
-	GoalTeamKey INT,
-    GoalKey INT,
     FOREIGN KEY (DateKey) REFERENCES DimDate(DateKey),
     FOREIGN KEY (TimeKey) REFERENCES DimensionTime(TimeKey),
     FOREIGN KEY (HomeTeamKey) REFERENCES DimensionTeam(TeamKey),
-    FOREIGN KEY (AwayTeamKey) REFERENCES DimensionTeam(TeamKey),
-	FOREIGN KEY (GoalTeamKey) REFERENCES DimensionTeam(TeamKey),
-    FOREIGN KEY (GoalKey) REFERENCES DimensionGoal(GoalKey)
+    FOREIGN KEY (AwayTeamKey) REFERENCES DimensionTeam(TeamKey)
 );
 
 CREATE TABLE FactTableBet (
