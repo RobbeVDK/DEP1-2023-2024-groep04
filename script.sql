@@ -1,10 +1,11 @@
-USE Groep4_DEP1;
+use Groep4_DEP1;
 
 -- Dimension tables
 CREATE TABLE DimensionTeam (
     TeamKey INT PRIMARY KEY,
     TeamName VARCHAR(255),
-    StamNumber INT
+	ShortName VARCHAR(255),
+    StamNumber INT,
 );
 
 CREATE TABLE DimDate (
@@ -12,9 +13,15 @@ CREATE TABLE DimDate (
     FullDate DATE,
     Season INT,
     Playday INT,
+	Year INT,
+	Month INT,
+	Day INT,
+	DayOfWeek INT,
+	IsWeekend BIT,
+	IsHoliday BIT,
 );
 
-CREATE TABLE DimensionTime (
+CREATE TABLE DimTime (
     TimeKey INT PRIMARY KEY,
     Hour INT,
     Minute INT
@@ -23,13 +30,14 @@ CREATE TABLE DimensionTime (
 CREATE TABLE DimensionStandings (
     StandingsDayKey INT PRIMARY KEY,
     DateKey INT,
-    StamNumber INT,
     Ranking INT,
+	TeamKey INT,
     Points INT,
     Wins INT,
     Ties INT,
     Losses INT,
     GoalDifference INT,
+	FOREIGN KEY (TeamKey) REFERENCES DimensionTeam(TeamKey),
     FOREIGN KEY (DateKey) REFERENCES DimDate(DateKey)
 );
 
@@ -39,28 +47,40 @@ CREATE TABLE DimensionStandings (
 CREATE TABLE FactTableMatch (
     MatchKey INT PRIMARY KEY,
     DateKey INT,
-    TimeKey INT,
+	HomeTeamScore INT,
+	AwayTeamScore INT,
+	StartUur INT,
+	EindUur INT,
     HomeTeamKey INT,
     AwayTeamKey INT,
     FOREIGN KEY (DateKey) REFERENCES DimDate(DateKey),
-    FOREIGN KEY (TimeKey) REFERENCES DimensionTime(TimeKey),
+    FOREIGN KEY (StartUur) REFERENCES DimTime(TimeKey),
+	FOREIGN KEY (EindUur) REFERENCES DimTime(TimeKey),
     FOREIGN KEY (HomeTeamKey) REFERENCES DimensionTeam(TeamKey),
     FOREIGN KEY (AwayTeamKey) REFERENCES DimensionTeam(TeamKey)
 );
 
 CREATE TABLE DimensionGoal (
     GoalKey INT PRIMARY KEY,
-    MatchKey INT,
+	MatchKey INT,
     GoalTimeRelative INT,
-    IsHomeTeamGoal BIT,
+	NewScoreHome INT,
+	NewScoreAway INT,
+    GoalTeam INT,
+	FOREIGN KEY (GoalTeam) REFERENCES DimensionTeam(TeamKey),
     FOREIGN KEY (MatchKey) REFERENCES FactTableMatch(MatchKey)
 );
 
 CREATE TABLE FactTableBet (
     BettingKey INT PRIMARY KEY,
     MatchKey INT,
-    DateKey INT,
-    TimeKey INT,
+    DateKeyMatch INT,
+    TimeKeyMatch INT,
+	DateKeyScrape INT,
+	TimeKeyScrape INT,
+	HomeTeamScore INT,
+	AwayTeamScore INT,
+	under_over_x INT,
     OddsHome DECIMAL(5,2),
     OddsAway DECIMAL(5,2),
     OddsDraw DECIMAL(5,2),
@@ -68,5 +88,5 @@ CREATE TABLE FactTableBet (
     OddsOverGoals DECIMAL(5,2),
     FOREIGN KEY (MatchKey) REFERENCES FactTableMatch(MatchKey),
     FOREIGN KEY (DateKey) REFERENCES DimDate(DateKey),
-    FOREIGN KEY (TimeKey) REFERENCES DimensionTime(TimeKey)
+    FOREIGN KEY (TimeKey) REFERENCES DimTime(TimeKey)
 );
