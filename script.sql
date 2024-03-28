@@ -23,8 +23,6 @@ CREATE TABLE DimensionTime (
 CREATE TABLE DimensionStandings (
     StandingsDayKey INT PRIMARY KEY,
     DateKey INT,
-    StandingsPlayday INT,
-    StandingsYear INT,
     StamNumber INT,
     Ranking INT,
     Points INT,
@@ -35,12 +33,7 @@ CREATE TABLE DimensionStandings (
     FOREIGN KEY (DateKey) REFERENCES DimDate(DateKey)
 );
 
-CREATE TABLE DimensionGoal (
-    GoalKey INT PRIMARY KEY,
-    GoalTimeRelative INT,
-    IsHomeTeamGoal BIT,
-    FOREIGN KEY (MatchKey) REFERENCES FactTableMatch(MatchKey)
-);
+
 
 -- Fact tables
 CREATE TABLE FactTableMatch (
@@ -53,6 +46,14 @@ CREATE TABLE FactTableMatch (
     FOREIGN KEY (TimeKey) REFERENCES DimensionTime(TimeKey),
     FOREIGN KEY (HomeTeamKey) REFERENCES DimensionTeam(TeamKey),
     FOREIGN KEY (AwayTeamKey) REFERENCES DimensionTeam(TeamKey)
+);
+
+CREATE TABLE DimensionGoal (
+    GoalKey INT PRIMARY KEY,
+    MatchKey INT,
+    GoalTimeRelative INT,
+    IsHomeTeamGoal BIT,
+    FOREIGN KEY (MatchKey) REFERENCES FactTableMatch(MatchKey)
 );
 
 CREATE TABLE FactTableBet (
